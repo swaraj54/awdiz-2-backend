@@ -16,4 +16,4 @@ mongoose.connect('mongodb+srv://swaraj1920:swaraj1920@cluster0.6yd9l.mongodb.net
 .catch((err) => console.log("DB Error => ", err));
 
 
-app.listen(8001, () => console.log("Working on port 8001")); // port
+app.listen(8000, () => console.log("Working on port 8001")); // port
