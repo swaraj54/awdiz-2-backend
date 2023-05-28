@@ -11,10 +11,24 @@ export const addProduct = async (req, res) => {
             price: Price,
             Image: Image
         })
-        console.log(product,"check here")
+        console.log(product, "check here")
         await product.save();
         return res.send(product);
     } catch (error) {
-        console.log(error)
+        return res.send(error);
+    }
+}
+
+
+export const getAllProducts = async (req, res) => {
+    try {
+        const resposne = await Products.find({}).exec();
+        if (resposne) {
+            return res.send(resposne);
+        } else {
+            return res.send("No Products Found!");
+        }
+    } catch (error) {
+        return res.send(error);
     }
 }
