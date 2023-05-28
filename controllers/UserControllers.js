@@ -1,8 +1,25 @@
 import Users from "../modals/Users.js";
 
 
-export const login = (req, res) => {
-    return res.send("Hi from login...")
+export const login = async (req, res) => {
+    try {
+        const { userEmail, userPassword } = req.body;
+        if (!userEmail) return res.send("User Email is required!");
+        if (!userPassword) return res.send("User Password is required!");
+        const response = await Users.find({ email: userEmail }).exec();
+        // console.log(response)
+        if (response.length) {
+            if (userPassword === response[0].password) {
+                return res.send("You are logged In.")
+            } else {
+                return res.send("Wrong password.")
+            }
+        } else {
+            return res.send("User not found check your Email..")
+        }
+    } catch (error) {
+        return res.send(error)
+    }
 }
 
 export const register = async (req, res) => {
@@ -23,7 +40,7 @@ export const register = async (req, res) => {
         }
         const response = await Users.find({ email: userEmail }).exec();
         // console.log(response,"response")
-        if (response.length ) {
+        if (response.length) {
             return res.send("Email is already Taken or You are already resgistered!!");
         }
         const user = new Users({
