@@ -75,7 +75,6 @@ export const getUserByEmail = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const { email, name } = req.body;
-        if (!email) return res.send("Email not found!")
         if (!name) return res.send("Name not found!")
         const response = await Users.findOneAndUpdate({ email }, { name }).exec();
         res.send(response);
