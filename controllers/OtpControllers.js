@@ -50,3 +50,44 @@ export const otpCheckForRegister = async (req, res) => {
         return res.send(error);
     }
 }
+
+
+export const otpLogin = async (req, res) => {
+    try {
+        const { email, number } = req.body;
+        if (!email) return res.send("Email is required!")
+        if (!number) return res.send("Number is required!")
+
+        const user = await Users.find({ email, number }).exec();
+        if (!user) return res.send("User is not found!");
+        console.log(user, "user")
+        const userId = user[0]?._id;
+        const code = uuidv4();
+        // crate another code
+        const updateUser = await Users.findByIdAndUpdate({ _id: userId }, { loginOtp: code }).exec(); // update the 2 scheamas
+
+        res.send("Check you email or number for otp.");
+
+    } catch (error) {
+        res.send(error)
+    }
+}
+
+
+export const otpCheckLogin = async (req, res) => {
+    try {
+        const { otp, number, email } = req.body;
+        if (!otp) return res.send("Otp not found!")
+        if (!number) return res.send("Number not found!")
+        if (!email) return res.send("Email not found!")
+
+        const user = await Users.find({ number, email }).exec();
+
+        if (user[0].loginOtp == otp) {
+            return res.send("Login Successful.")
+        }
+        return res.send('Otp is wrong!');
+    } catch (error) {
+        return res.send(error)
+    }
+}
