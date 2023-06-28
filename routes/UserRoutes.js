@@ -6,6 +6,19 @@ import { otpCheckForRegister, otpCheckLogin, otpLogin, otpRegisteration } from "
 
 var router = express.Router();
 
+router.use((req, res, next) => {
+    console.log("INside router level middleware")
+    if (true) {
+        next();
+    } else {
+        return res.send("Returing from router middleware")
+    }
+})
+
+router.get('/ping', (req, res) => {
+    return res.send("Pong")
+})
+
 router.post('/login', login);
 router.post('/register', register);
 router.post('/add-product', checkEmail, addProduct);
