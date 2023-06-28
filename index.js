@@ -4,8 +4,10 @@ import { kunal, Swaraj, Anu, Krishnan, Abhi } from './controllers/All-Controller
 import router from './routes/UserRoutes.js';
 import mongoose from "mongoose";
 import { CronJob } from "cron";
+import dotenv from 'dotenv';
 
 const app = express();
+dotenv.config();
 
 app.use((err, req, res, next) => {
     console.log("Inside error middleware!!!")
@@ -48,8 +50,8 @@ job.start();
 
 
 
-app.get("/hi", (req, res) => {
-    return res.send("hello")
+app.get("/ping", (req, res) => {
+    return res.send("pong")
 })
 
 
@@ -60,9 +62,9 @@ app.get("/hi", (req, res) => {
 
 
 
-mongoose.connect('mongodb+srv://swaraj1920:swaraj1920@cluster0.6yd9l.mongodb.net/awdizDB?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_URL)
     .then(() => console.log("DB connected"))
     .catch((err) => console.log("DB Error => ", err));
 
 
-app.listen(8000, () => console.log("Working on port 8000")); // port
+app.listen(process.env.PORT, () => console.log("Working on port 8000")); // port
