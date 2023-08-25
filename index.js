@@ -6,10 +6,11 @@ import mongoose from "mongoose";
 import { CronJob } from "cron";
 import dotenv from 'dotenv';
 import path from 'path';
+import cors from 'cors'
 
 const app = express();
 dotenv.config();
-
+app.use(cors());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }))
 
