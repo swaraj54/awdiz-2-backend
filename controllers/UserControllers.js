@@ -1,4 +1,5 @@
 import Users from "../modals/Users.js";
+import jwt from 'jsonwebtoken';
 
 
 export const login = async (req, res) => {
@@ -10,7 +11,9 @@ export const login = async (req, res) => {
         // console.log(response)
         if (response.length) {
             if (userPassword === response[0].password) {
-                return res.status(200).json({ success: true, message: "Login Successfull." })
+                const userObject = { name: response[0].name, picture: response[0].picture, email: response[0].email }
+                const token = jwt.sign({ userId: response[0]._id }, process.env.JWT_SECRET)
+                return res.status(200).json({ success: true, message: "Login Successfull.", user: userObject, token: token })
             } else {
                 return res.status(404).json({ success: false, message: "Wrong password." })
             }
