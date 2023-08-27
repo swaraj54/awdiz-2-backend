@@ -11,7 +11,7 @@ export const login = async (req, res) => {
         // console.log(response)
         if (response.length) {
             if (userPassword === response[0].password) {
-                const userObject = { name: response[0].name, picture: response[0].picture, email: response[0].email }
+                const userObject = { name: response[0].name, picture: response[0].picture, email: response[0].email, userId: response[0]._id }
                 const token = jwt.sign({ userId: response[0]._id }, process.env.JWT_SECRET)
                 return res.status(200).json({ success: true, message: "Login Successfull.", user: userObject, token: token })
             } else {
@@ -83,5 +83,30 @@ export const updateUser = async (req, res) => {
         res.send(response);
     } catch (error) {
         res.send(error)
+    }
+}
+
+
+export const getCurrentUser = async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) return res.status(404).json({ success: false, message: "Token is required." })
+
+        const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (!decodedData) return res.status(404).json({ success: false, message: "Token is not valid." })
+
+        const userId = decodedData.userId;
+
+        const user = await Users.findById(userId);
+        if (user) {
+            const userObject = { name: user.name, picture: user.picture, email: user.email, userId: user._id }
+            return res.status(200).json({ success: true, user: userObject })
+        }
+        return res.status(404).json({ success: false, message: "User not found." })
+
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error })
     }
 }
