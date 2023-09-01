@@ -24,11 +24,11 @@ export const getAllProducts = async (req, res) => {
     try {
         const resposne = await Products.find({}).exec();
         if (resposne) {
-            return res.send(resposne);
+            return res.status(200).json({ success: true, products: resposne });
         } else {
-            return res.send("No Products Found!");
+            return res.status(404).json({ success: false, message: "No Products Found!" });
         }
     } catch (error) {
-        return res.send(error);
+        return res.status(500).json({ success: false, message: error });
     }
 }

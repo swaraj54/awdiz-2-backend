@@ -49,10 +49,10 @@ app.use(myCustomMiddleware)
 app.use('/api/v1', router);
 
 
-var job = new CronJob('* * */7 * *', () => {
-    console.log("Excecuted in cron job;..")
-})
-job.start();
+// var job = new CronJob('* * */7 * *', () => {
+//     console.log("Excecuted in cron job;..")
+// })
+// job.start();
 
 
 
