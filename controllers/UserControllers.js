@@ -1,5 +1,6 @@
 import Users from "../modals/Users.js";
 import jwt from 'jsonwebtoken';
+import ProductSchema from '../modals/Products.js';
 
 
 export const login = async (req, res) => {
@@ -105,6 +106,46 @@ export const getCurrentUser = async (req, res) => {
         }
         return res.status(404).json({ success: false, message: "User not found." })
 
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error })
+    }
+}
+
+export const addCart = async (req, res) => {
+    try {
+        const { productId, userId } = req.body;
+        if (!productId) return res.status(404).json({ success: false, message: "Product Id is required." })
+        if (!userId) return res.status(404).json({ success: false, message: "User Id is required." })
+
+        const user = await Users.findByIdAndUpdate(userId, { $push: { cartProduct: productId } }, { new: true });
+        // console.log(user, "user")
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found." })
+        }
+        return res.status(200).json({ success: true, message: "Product added successfully to cart." })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error })
+    }
+}
+
+export const getCartProducts = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        if (!userId) return res.status(404).json({ success: false, message: "User Id is required." })
+
+        const user = await Users.findById(userId);
+        if (!user) return res.status(404).json({ success: false, message: "User not found." })
+
+        const cartProducts = user?.cartProduct;
+        const finalArray = [];
+        var totalPrice = 0;
+        for (var i = 0; i < cartProducts.length; i++) {
+            const product = await ProductSchema.findById(cartProducts[i])
+            totalPrice = totalPrice + product?.price
+            finalArray.push(product)
+        }
+        return res.status(200).json({ success: true, cartProducts: finalArray, totalPrice: totalPrice })
 
     } catch (error) {
         return res.status(500).json({ success: false, message: error })

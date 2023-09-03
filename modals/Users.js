@@ -8,7 +8,8 @@ const User = new Schema({
     password: String,
     otp: String,
     number: Number,
-    loginOtp: String
+    loginOtp: String,
+    cartProduct: [String]
     // 2 new shcema of number and emial with otp
 });
 
