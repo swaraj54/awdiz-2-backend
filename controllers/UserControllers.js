@@ -12,7 +12,7 @@ export const login = async (req, res) => {
         // console.log(response)
         if (response.length) {
             if (userPassword === response[0].password) {
-                const userObject = { name: response[0].name, picture: response[0].picture, email: response[0].email, userId: response[0]._id }
+                const userObject = { name: response[0].name, picture: response[0].picture, email: response[0].email, userId: response[0]._id, role: response[0].role }
                 const token = jwt.sign({ userId: response[0]._id }, process.env.JWT_SECRET)
                 return res.status(200).json({ success: true, message: "Login Successfull.", user: userObject, token: token })
             } else {
@@ -28,11 +28,12 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
     try {
-        const { name, email, password, confirmPassword } = req.body.userData;
+        const { name, email, password, confirmPassword, role } = req.body.userData;
         if (!name) return res.status(404).json({ success: false, message: "User name is requierd!" });
         if (!email) return res.status(404).json({ success: false, message: "User email is required!" })
         if (!password) return res.status(404).json({ success: false, message: "User Password is required!" })
         if (!confirmPassword) return res.status(404).json({ success: false, message: "User Confirm Password is required!" })
+        if (!role) return res.status(404).json({ success: false, message: "Role is required!" })
         if (confirmPassword.length <= 8) {
             return res.status(404).json({ success: false, message: "User Password length is less than 8 !" })
         }
@@ -50,7 +51,8 @@ export const register = async (req, res) => {
         const user = new Users({
             name,
             email,
-            password: password
+            password: password,
+            role
         });
         await user.save();
         return res.status(200).json({ success: true, message: "Resgistration Succesfull!" })
@@ -101,7 +103,7 @@ export const getCurrentUser = async (req, res) => {
 
         const user = await Users.findById(userId);
         if (user) {
-            const userObject = { name: user.name, picture: user.picture, email: user.email, userId: user._id }
+            const userObject = { name: user.name, picture: user.picture, email: user.email, userId: user._id, role: user.role }
             return res.status(200).json({ success: true, user: userObject })
         }
         return res.status(404).json({ success: false, message: "User not found." })

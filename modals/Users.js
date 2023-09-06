@@ -9,7 +9,12 @@ const User = new Schema({
     otp: String,
     number: Number,
     loginOtp: String,
-    cartProduct: [String]
+    cartProduct: [String],
+    role: {
+        type: String,
+        enum: ['buyer', 'seller', 'admin'],
+        default: 'buyer'
+    }
     // 2 new shcema of number and emial with otp
 });
 
