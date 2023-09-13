@@ -48,3 +48,18 @@ export const getSingleProduct = async (req, res) => {
         return res.status(500).json({ success: false, message: error });
     }
 }
+export const updateProduct = async (req, res) => {
+    try {
+        const { name, price, image, _id } = req.body.product;
+        if (!name || !price || !image) throw new Error("Product data not found..")
+
+        const updatedproduct = await Products.findByIdAndUpdate(_id, { name, price, image }, { new: true });
+        if (updatedproduct) {
+            return res.status(200).json({ success: true, message: "Product updated successfully.", product: updatedproduct })
+        }
+        throw new Error("No product found.")
+
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error });
+    }
+}

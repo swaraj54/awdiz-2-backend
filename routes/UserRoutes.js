@@ -1,9 +1,10 @@
 import express from "express";
 import { getCurrentUser, getUserByEmail, login, register, updateUser } from "../controllers/UserControllers.js";
-import { addProduct, getAllProducts, getSingleProduct } from "../controllers/ProductControllers.js";
+import { addProduct, getAllProducts, getSingleProduct, updateProduct } from "../controllers/ProductControllers.js";
 import { checkEmail } from "../middlewares/authMiddleware.js";
 import { otpCheckForRegister, otpCheckLogin, otpLogin, otpRegisteration } from "../controllers/OtpControllers.js";
 import buyerRoutes from './BuyerRoutes.js';
+import sellerRouter from './SellerRoutes.js';
 
 
 var router = express.Router();
@@ -18,12 +19,14 @@ router.use((req, res, next) => {
 })
 
 
+
+router.use('/seller', sellerRouter)
 router.use('/buyer', buyerRoutes)
 
 router.get('/ping', (req, res) => {
     return res.send("Pong")
 })
-
+router.post('/update-product', updateProduct)
 router.post('/login', login);
 router.post('/register', register);
 router.post('/add-product', addProduct);

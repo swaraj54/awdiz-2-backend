@@ -14,6 +14,9 @@ const User = new Schema({
         type: String,
         enum: ['buyer', 'seller', 'admin'],
         default: 'buyer'
+    },
+    isAdminVerified: {
+        type: Boolean
     }
     // 2 new shcema of number and emial with otp
 });

@@ -12,6 +12,11 @@ export const login = async (req, res) => {
         // console.log(response)
         if (response.length) {
             if (userPassword === response[0].password) {
+                if (response[0].role == 'admin') {
+                    if (response[0].isAdminVerified == false) {
+                        return res.status(404).json({ success: false, message: "You are not verified yet as admin, contact support.." })
+                    }
+                }
                 const userObject = { name: response[0].name, picture: response[0].picture, email: response[0].email, userId: response[0]._id, role: response[0].role }
                 const token = jwt.sign({ userId: response[0]._id }, process.env.JWT_SECRET)
                 return res.status(200).json({ success: true, message: "Login Successfull.", user: userObject, token: token })
@@ -47,6 +52,21 @@ export const register = async (req, res) => {
         // console.log(response,"response")
         if (response.length) {
             return res.status(404).json({ success: false, message: "Email is already Taken or You are already resgistered!!" })
+        }
+        var flagForAdmin;
+        if (role == 'admin') {
+            flagForAdmin = false
+        }
+        if (flagForAdmin == false) {
+            const user = new Users({
+                name,
+                email,
+                password: password,
+                role,
+                isAdminVerified: false
+            });
+            await user.save();
+            return res.status(200).json({ success: true, message: "Resgistration Succesfull for admin!" })
         }
         const user = new Users({
             name,
