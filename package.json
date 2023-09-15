@@ -19,6 +19,7 @@
     "mongoose": "^7.2.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.22",
+    "twilio": "^4.17.0",
     "uuid": "^9.0.0"
   },
   "type": "module"

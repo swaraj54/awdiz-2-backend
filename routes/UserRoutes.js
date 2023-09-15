@@ -1,5 +1,5 @@
 import express from "express";
-import { getCurrentUser, getUserByEmail, login, register, updateUser } from "../controllers/UserControllers.js";
+import { getCurrentUser, getUserByEmail, login, register, updateUser, verifyPhone } from "../controllers/UserControllers.js";
 import { addProduct, getAllProducts, getSingleProduct, updateProduct } from "../controllers/ProductControllers.js";
 import { checkEmail } from "../middlewares/authMiddleware.js";
 import { otpCheckForRegister, otpCheckLogin, otpLogin, otpRegisteration } from "../controllers/OtpControllers.js";
@@ -26,6 +26,8 @@ router.use('/buyer', buyerRoutes)
 router.get('/ping', (req, res) => {
     return res.send("Pong")
 })
+
+router.post('/verify-phone', verifyPhone)
 router.post('/update-product', updateProduct)
 router.post('/login', login);
 router.post('/register', register);

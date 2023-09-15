@@ -17,6 +17,16 @@ const User = new Schema({
     },
     isAdminVerified: {
         type: Boolean
+    },
+    otpForPhoneVerification: {
+        type: String
+    },
+    isPhoneVerified: {
+        type: Boolean,
+        default: false
+    },
+    phone: {
+        type: String
     }
     // 2 new shcema of number and emial with otp
 });

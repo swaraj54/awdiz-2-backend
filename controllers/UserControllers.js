@@ -1,6 +1,7 @@
 import Users from "../modals/Users.js";
 import jwt from 'jsonwebtoken';
 import ProductSchema from '../modals/Products.js';
+import sendSms from '../helpers/sms/Twilio.js'
 
 
 export const login = async (req, res) => {
@@ -169,6 +170,45 @@ export const getCartProducts = async (req, res) => {
         }
         return res.status(200).json({ success: true, cartProducts: finalArray, totalPrice: totalPrice })
 
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error })
+    }
+}
+
+export const verifyPhone = async (req, res) => {
+    try {
+        const { userId, phone } = req.body;
+        if (!userId) return res.status(404).json({ success: false, message: "User Id is required." })
+        if (!phone) return res.status(404).json({ success: false, message: "Phone is required." })
+
+        const user = await Users.findById(userId);
+        if (!user) return res.status(404).json({ success: false, message: "User not found." })
+
+        const otp = 876293;
+        const message = `Hi here is your phone verification otp - ${otp}`
+
+        const response = await sendSms(phone, message)
+        console.log(response, "response")
+        if (response) {
+            const updateUser = await Users.findByIdAndUpdate(userId, { otpForPhoneVerification: otp, phone })
+            if (updateUser) {
+                return res.status(200).json({ success: true, message: "Otp is successfully sent your number.." })
+            }
+            return res.status(404).json({ success: false, message: "Internal server error.." })
+        }
+        return res.status(404).json({ success: false, message: "Internal server error.." })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error })
+    }
+}
+export const verifyOtp = async (req, res) => {
+    try {
+        const { userId, otp } = req.body;
+        if (!userId) return res.status(404).json({ success: false, message: "User Id is required." })
+        if (!otp) return res.status(404).json({ success: false, message: "otp is required." })
+        const isOtpRight = await Users.findOneAndUpdate({ userId, otpForPhoneVerification: otp }, { isPhoneVerified: true });
+        if (!isOtpRight) return res.status(404).json({ success: false, message: "Otp is wrong." })
+        return res.status(200).json({ success: false, message: "Otp verification successfully..." })
     } catch (error) {
         return res.status(500).json({ success: false, message: error })
     }
